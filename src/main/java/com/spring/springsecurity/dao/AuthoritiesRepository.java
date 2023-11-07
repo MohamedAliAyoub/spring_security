@@ -1,10 +1,10 @@
 package com.spring.springsecurity.dao;
 
-import com.spring.springsecurity.model.User;
+import com.spring.springsecurity.model.Authorities;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User , Long> {
+public interface AuthoritiesRepository extends JpaRepository<Authorities, Long> {
 
 }
