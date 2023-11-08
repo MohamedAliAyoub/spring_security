@@ -1,11 +1,22 @@
 package com.spring.springsecurity.model;
 
+import lombok.Getter;
+
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "user")
 public class User {
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    public void setAuthorities(List<Authorities> authorities) {
+        this.authorities = authorities;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,29 +37,26 @@ public class User {
     @Column(name = "active")
     private int active;
 
+    @Getter
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns ={ @JoinColumn(name = "role_id")}
-    )
-    private Set<Role> roles;
+    @JoinTable(name = "user_roles", joinColumns = {@JoinColumn(name = "user_id")}, inverseJoinColumns = {@JoinColumn(name = "role_id")})
+    private List<Role> roles;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_authorities",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns ={ @JoinColumn(name = "authorities_id")}
-    )
-    private Set<Authorities> authorities;
+    @Getter
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_authorities", joinColumns = {@JoinColumn(name = "user_id")}, inverseJoinColumns = {@JoinColumn(name = "authorities_id")})
+    private List<Authorities> authorities;
 
-public User( String userName , String password , String age , String address , int active ){
-    this.userName = userName;
-    this.password = password;
-    this.age = age;
-    this.address = address;
-    this.active = active;
-}
+    public User() {
+    }
+
+    public User(String userName, String password, String age, String address, int active) {
+        this.userName = userName;
+        this.password = password;
+        this.age = age;
+        this.address = address;
+        this.active = active;
+    }
 
     public String getUserName() {
         return userName;
