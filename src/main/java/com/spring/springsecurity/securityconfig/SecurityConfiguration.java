@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AndRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -38,7 +40,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //.anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/api/login");
+//                .loginProcessingUrl("/signin")
+//                you can override username and password with this code
+//                .usernameParameter("user")
+//                .passwordParameter("pass")
+                .loginPage("/api/login")
+                .and()
+                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/api/login");
     }
     @Bean
     DaoAuthenticationProvider authenticationProvider(){
