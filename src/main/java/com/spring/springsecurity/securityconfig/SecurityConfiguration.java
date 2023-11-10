@@ -1,12 +1,17 @@
 package com.spring.springsecurity.securityconfig;
 
+import com.spring.springsecurity.dao.UserRepository;
+import com.spring.springsecurity.securityconfig.Jwt.JwtAuthenticationFilter;
+import com.spring.springsecurity.securityconfig.Jwt.JwtAuthorizationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
@@ -16,11 +21,12 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
     private UserPrincipalDetailsService userPrincipalDetailsService;
+    private UserRepository userRepository;
 
-    public SecurityConfiguration(UserPrincipalDetailsService userPrincipalDetailsService) {
+    public SecurityConfiguration(UserPrincipalDetailsService userPrincipalDetailsService, UserRepository userRepository) {
         this.userPrincipalDetailsService = userPrincipalDetailsService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -30,24 +36,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(),this.userRepository))
                 .authorizeRequests()
+                .antMatchers(HttpMethod.POST,"/login").permitAll()
                 .antMatchers("/api/main").permitAll()
                 .antMatchers("/api/profile").authenticated()
                 .antMatchers("/api/admin/**").hasRole("ADMIN")
                 .antMatchers("/api/manage").hasAnyRole("ADMIN","MANGER")
                 .antMatchers("/api/basic/mybasic").hasAuthority("ACCESS_BASIC1")
                 .antMatchers("/api/basic/allbasic").hasAuthority("ACCESS_BASIC2")
-                //.anyRequest().authenticated()
-                .and()
-                .formLogin()
-//                .loginProcessingUrl("/signin")
-//                you can override username and password with this code
-//                .usernameParameter("user")
-//                .passwordParameter("pass")
-                .loginPage("/api/login")
-                .and()
-                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/");
+                .antMatchers("/api/myadmin").hasRole("ADMIN")
+                .antMatchers("/api/myadminmanget").hasAnyRole("ADMIN","MANGER")
+                .antMatchers("/api/myadminmangeruser").hasAnyRole("ADMIN","MANGER","USER")
+                .anyRequest().authenticated();
     }
     @Bean
     DaoAuthenticationProvider authenticationProvider(){
