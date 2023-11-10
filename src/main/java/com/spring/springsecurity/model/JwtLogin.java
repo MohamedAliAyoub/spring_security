@@ -1,13 +1,13 @@
 package com.spring.springsecurity.model;
 
-public class JWTLogin {
+public class JwtLogin {
     private String userName ;
     private String password ;
 
-    public JWTLogin() {
+    public JwtLogin() {
     }
 
-    public JWTLogin(String userName, String password) {
+    public JwtLogin(String userName, String password) {
         this.userName = userName;
         this.password = password;
     }
