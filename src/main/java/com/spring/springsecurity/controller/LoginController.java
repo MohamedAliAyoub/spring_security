@@ -5,21 +5,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("api/basic/")
+@Controller
+@RequestMapping("api/")
 public class LoginController {
-
-    @GetMapping("mybasic")
-    public String login()
-    {
-        return "my name is mohamed";
+    @GetMapping("login")
+    public String login(){
+        return "login";
     }
-    @GetMapping("allbasic")
-    public String all()
-    {
-        return "all";
-    }
-
-
-
 }

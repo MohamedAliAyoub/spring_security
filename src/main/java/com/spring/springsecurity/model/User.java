@@ -2,7 +2,9 @@ package com.spring.springsecurity.model;
 
 import lombok.Getter;
 
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -10,9 +12,7 @@ import java.util.Set;
 @Table(name = "user")
 public class User {
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
+
 
     public void setAuthorities(List<Authorities> authorities) {
         this.authorities = authorities;
@@ -22,30 +22,32 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Getter
     @Column(name = "user_name")
     private String userName;
 
+    @Getter
     @Column(name = "password")
     private String password;
 
+    @Getter
     @Column(name = "age")
     private String age;
 
+    @Getter
     @Column(name = "address")
     private String address;
 
+    @Getter
     @Column(name = "active")
     private int active;
 
-    @Getter
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles", joinColumns = {@JoinColumn(name = "user_id")}, inverseJoinColumns = {@JoinColumn(name = "role_id")})
-    private List<Role> roles;
+
 
     @Getter
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_authorities", joinColumns = {@JoinColumn(name = "user_id")}, inverseJoinColumns = {@JoinColumn(name = "authorities_id")})
-    private List<Authorities> authorities;
+    private List<Authorities> authorities = new ArrayList<>();
 
     public User() {
     }
@@ -58,40 +60,20 @@ public class User {
         this.active = active;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public String getAge() {
-        return age;
-    }
-
     public void setAge(String age) {
         this.age = age;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public int getActive() {
-        return active;
     }
 
     public void setActive(int active) {
