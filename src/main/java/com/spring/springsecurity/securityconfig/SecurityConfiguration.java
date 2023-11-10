@@ -47,7 +47,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .loginPage("/api/login")
                 .and()
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/api/login");
+                .logoutSuccessUrl("/");
     }
     @Bean
     DaoAuthenticationProvider authenticationProvider(){
